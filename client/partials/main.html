@@ -1,0 +1,36 @@
+<span id="welcome" ng-controller="loginController">Welcome {{ user }}!</span>
+
+<div ng-controller="githubController">
+
+  <div>
+    <span>Enter a Github Username to get started</span>
+    <form ng-submit="getGithub()">
+
+      <input id="githubName" class="form-control" placeholder="ex: mjhea0" ng-model="githubName">
+      <br>
+      <button type="submit" class="btn btn-sm btn-success">Get Stats!</button>
+
+    </form>
+  </div>
+  <br>
+  <div ng-controller="logoutController" class="logoutButton">
+    <a ng-click='logout()' class="btn btn-warning">Logout</a>
+  </div>
+
+  <div id="github-info" class="github-info">
+
+    <h1>{{ githubUsername }}</h1>
+    <img ng-show="image" src="{{ githubAvatar }}">
+
+    <p ng-show="searched">Check out their blog! {{ blog }}</p>
+    <p ng-show="searched">Spam them! {{ email }}</p>
+    <p ng-show="searched">Stalk them in {{ location }}!</p>
+    <p ng-show="searched">They have {{ totalRepos }} repos! Amazing!</p>
+    <p ng-show="searched">{{ stalkers }} are stalking this person on Github!</p>
+    <p ng-show="searched">This person is following {{ stalkees }} people! That's creepy...</p>
+    <p ng-show="searched">They have {{ forks }} forks! Better grab some more silverware!</p>
+    <p ng-show="searched">They have a total of {{ totalStars }} stars!</p>
+    <p ng-show="searched">They have {{ numberStarredRepos }} repos with stars! Impressive!</p>
+  </div>
+
+</div>
