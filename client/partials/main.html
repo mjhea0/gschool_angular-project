@@ -23,19 +23,22 @@
   </div>
 
   <div id="github-info" class="github-info">
+    <section>
 
-    <h1>{{ githubUsername }}</h1>
-    <img ng-show="image" src="{{ githubAvatar }}">
+      <h1 class="">{{ githubUsername }}</h1>
+      <img ng-show="image" class="" src="{{ githubAvatar }}">
 
-    <p ng-show="searched">Check out their blog! {{ blog }}</p>
-    <p ng-show="searched">Spam them! {{ email }}</p>
-    <p ng-show="searched">Stalk them in {{ location }}!</p>
-    <p ng-show="searched">They have {{ totalRepos }} repos! Amazing!</p>
-    <p ng-show="searched">{{ stalkers }} are stalking this person on Github!</p>
-    <p ng-show="searched">This person is following {{ stalkees }} people! That's creepy...</p>
-    <p ng-show="searched">They have {{ forks }} forks! Better grab some more silverware!</p>
-    <p ng-show="searched">They have a total of {{ totalStars }} stars!</p>
-    <p ng-show="searched">They have {{ numberStarredRepos }} repos with stars! Impressive!</p>
+      <p ng-show="searched" class="">Check out their blog! {{ blog }}</p>
+      <p ng-show="searched" class="">Spam them! {{ email }}</p>
+      <p ng-show="searched" class="">Stalk them in {{ location }}!</p>
+      <p ng-show="searched" class="">They have {{ totalRepos }} repos! Amazing!</p>
+      <p ng-show="searched" class="">{{ stalkers }} are stalking this person on Github!</p>
+      <p ng-show="searched" class="">This person is following {{ stalkees }} people! That's creepy...</p>
+      <p ng-show="searched" class="">They have {{ forks }} forks! Better grab some more silverware!</p>
+      <p ng-show="searched" class="">They have a total of {{ totalStars }} stars!</p>
+      <p ng-show="searched" class="">They have {{ numberStarredRepos }} repos with stars! Impressive!</p>
+
+    </section>
   </div>
 
 </div>

@@ -8,15 +8,17 @@
         <label>Username</label>
         <input id="loginName" type="text" class="form-control" name="username" ng-model="loginForm.username" required>
       </div>
-      <div class="form-group">
+      <div class="form-group passwordText">
         <label>Password</label>
           <input type="password" class="form-control" name="password" ng-model="loginForm.password" required>
         </div>
         <div>
           <button type="submit" class="btn btn-info" ng-disabled="disabled">Login</button>
         </div>
-        <span>Don't have a username? </span><button type="button" class="btn btn-info btn-sm" data-toggle="modal" data-target="#myModal">Sign Up!</button>
     </form>
+  </div>
+  <div class="signUpText">
+    <span>Don't have a username? </span><button type="button" class="btn btn-info btn-sm" data-toggle="modal" data-target="#myModal">Sign Up!</button>
   </div>
 
 
