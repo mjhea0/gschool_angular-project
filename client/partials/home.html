@@ -1,57 +1,60 @@
-<div class="col-md-4">
-  <h1>Login</h2>
-  <div ng-show="error" class="alert alert-danger">Invalid username or password!</div>
-  <form class="form" ng-submit="login()">
-    <div class="form-group">
-      <label>Username</label>
-      <input id="loginName" type="text" class="form-control" name="username" ng-model="loginForm.username" required>
-    </div>
-    <div class="form-group">
-      <label>Password</label>
-        <input type="password" class="form-control" name="password" ng-model="loginForm.password" required>
+<body class="loginBody">
+
+  <div class="col-md-4-center text-center">
+    <h1><u>Github Statistics Login</u></h2>
+    <div ng-show="loginError" class="alert alert-danger">Invalid username or password!</div>
+    <form class="form" ng-submit="login()">
+      <div class="form-group">
+        <label>Username</label>
+        <input id="loginName" type="text" class="form-control" name="username" ng-model="loginForm.username" required>
       </div>
-      <div>
-        <button type="submit" class="btn btn-info" ng-disabled="disabled">Login</button>
-      </div>
-      <span>Don't have a username? </span><button type="button" class="btn btn-info btn-sm" data-toggle="modal" data-target="#myModal">Sign Up!</button>
-  </form>
-</div>
+      <div class="form-group">
+        <label>Password</label>
+          <input type="password" class="form-control" name="password" ng-model="loginForm.password" required>
+        </div>
+        <div>
+          <button type="submit" class="btn btn-info" ng-disabled="disabled">Login</button>
+        </div>
+        <span>Don't have a username? </span><button type="button" class="btn btn-info btn-sm" data-toggle="modal" data-target="#myModal">Sign Up!</button>
+    </form>
+  </div>
 
 
     <!-- Modal -->
-    <div id="myModal" class="modal fade" role="dialog" action="/register" method="post">
-      <div class="modal-dialog">
+  <div id="myModal" class="modal fade" role="dialog" action="/register" method="post">
+    <div class="modal-dialog">
 
-        <!-- ** Modal content ** -->
-        <div class="modal-content">
-          <div class="modal-header">
-            <button type="button" class="close" data-dismiss="modal">&times;</button>
-            <h4 class="modal-title">Sign up!</h4>
-          </div>
-          <div class="modal-body">
-            <div class="col-md-4">
-              <h1>Register</h2>
-              <div ng-show="error" class="alert alert-danger"></div>
-              <div ng-show="success" class="alert alert-success"></div>
-              <form class="form" ng-submit="register()">
-                <div class="form-group">
-                  <label>Username</label>
-                  <input type="text" class="form-control" name="username" ng-model="registerForm.username" required>
+      <!-- ** Modal content ** -->
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">Sign up!</h4>
+        </div>
+        <div class="modal-body">
+          <div class="col-lg-12">
+            <h1>Register</h2>
+            <div ng-show="error" class="alert alert-danger">Ohh noess! Something went wrong!</div>
+            <div ng-show="success" class="alert alert-success">Registration successful!</div>
+            <form class="form" ng-submit="register()">
+              <div class="form-group">
+                <label>Username</label>
+                <input type="text" class="form-control" name="username" ng-model="registerForm.username" required>
+              </div>
+              <div class="form-group">
+                <label>Password</label>
+                  <input type="password" class="form-control" name="password" ng-model="registerForm.password" required>
                 </div>
-                <div class="form-group">
-                  <label>Password</label>
-                    <input type="password" class="form-control" name="password" ng-model="registerForm.password" required>
-                  </div>
-                  <div>
-                    <button type="submit" class="btn btn-info" ng-disabled="disabled">Register</button>
-                  </div>
-              </form>
-            </div>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-success" data-dismiss="modal">Done!</button>
+                <div>
+                  <button type="submit" class="btn btn-info" ng-disabled="disabled">Register</button>
+                </div>
+            </form>
           </div>
         </div>
-
+        <div class="modal-footer">
+        </div>
       </div>
+
     </div>
+  </div>
+
+</body>
