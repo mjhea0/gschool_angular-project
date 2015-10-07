@@ -8,3 +8,20 @@ img {
   height: 100px;
   width: 100px;
 }
+
+.form-control {
+  width: 500px;
+  margin: 0 auto;
+}
+
+.getStats {
+  width: 100px;
+  margin: 0 auto;
+}
+
+body {
+  background: url('http://dmdphilly.org/wp-content/uploads/2015/07/github.jpg') no-repeat center center fixed;
+  /*background-repeat: no-repeat;*/
+  background-size: contain;
+
+}
