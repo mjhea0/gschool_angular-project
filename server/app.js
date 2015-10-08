@@ -23,19 +23,19 @@ var app = express();
 var routes = require('./routes/api.js');
 
 // define middleware
-app.use(express.static(path.join(__dirname, '../client')));
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(require('express-session')({
+    cookie: { maxAge: 300000},
     secret: 'keyboard cat',
     resave: true,
     saveUninitialized: true
 }));
 app.use(passport.initialize());
 app.use(passport.session());
-app.use(express.static(path.join(__dirname, 'public')));
+// app.use(express.static(path.join(__dirname, 'public')));
 
 // configure passport
 passport.use(new localStrategy(User.authenticate()));
@@ -45,23 +45,35 @@ passport.deserializeUser(User.deserializeUser());
 // routes
 app.use('/user/', routes);
 
-app.get('/', function(req, res) {
-  res.sendFile(path.join(__dirname, '../client', 'index.html'));
+app.get('/', function(req, res, next) {
+  passport.authenticate('local', function(err, user, info) {
+    res.sendFile(path.join(__dirname, '../client', 'index.html'));
+    console.log(arguments);
+  })(req, res, next);
+  // console.log('HELLO');
+  // console.log(req.user);
 });
+
+// app.get('/', function(req, res) {
+//   res.sendFile(path.join(__dirname, '../client', 'index.html'));
+//   console.log(req.user);
+// });
+app.use(express.static(path.join(__dirname, '../client')));
+
 
 // error hndlers
-app.use(function(req, res, next) {
-    var err = new Error('Not Found');
-    err.status = 404;
-    next(err);
-});
+// app.use(function(req, res, next) {
+//     var err = new Error('Not Found');
+//     err.status = 404;
+//     next(err);
+// });
 
-app.use(function(err, req, res) {
-  res.status(err.status || 500);
-  res.end(JSON.stringify({
-    message: err.message,
-    error: {}
-  }));
-});
+// app.use(function(err, req, res) {
+//   res.status(err.status || 500);
+//   res.end(JSON.stringify({
+//     message: err.message,
+//     error: {}
+//   }));
+// });
 
 module.exports = app;
