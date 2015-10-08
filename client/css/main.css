@@ -4,7 +4,7 @@
   top: 5px;
 }
 
-img {
+.userImage {
   height: 100px;
   width: 100px;
 }
@@ -74,4 +74,14 @@ section {
  text-align: left;
  word-wrap: break-word;
  font-size: 18px
+ visibility: 50%;
+}
+
+.githubLogo {
+  height: 15px;
+  width: 15px;
+}
+
+.githubButton {
+  /*background-color: #045800;*/
 }
