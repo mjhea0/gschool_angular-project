@@ -15,10 +15,6 @@ router.post('/register', function(req, res) {
   });
 });
 
-// router.get('/', function(req, res) {
-//   res.render('')
-// })
-
 router.post('/login', function(req, res, next) {
   passport.authenticate('local', function(err, user, info) {
     if (err) { return next(err); }
