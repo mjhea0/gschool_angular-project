@@ -15,6 +15,10 @@ router.post('/register', function(req, res) {
   });
 });
 
+// router.get('/', function(req, res) {
+//   res.render('')
+// })
+
 router.post('/login', function(req, res, next) {
   passport.authenticate('local', function(err, user, info) {
     if (err) { return next(err); }
@@ -34,5 +38,17 @@ router.get('/logout', function(req, res) {
   req.logout();
   res.status(200).json({status: 'Bye!'});
 });
+
+var passportGithub = require('../auth/github');
+
+router.get('/auth/github', passportGithub.authenticate('github', { scope: [ 'user:email' ] }));
+
+router.get('/auth/github/callback',
+  passportGithub.authenticate('github', { failureRedirect: '/' }),
+  function(req, res) {
+    // Successful authentication
+    // console.log(req);
+    res.json(req.user);
+  });
 
 module.exports = router;
