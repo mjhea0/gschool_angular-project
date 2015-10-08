@@ -9,7 +9,6 @@ angular.module('myApp').controller('loginController',
       // initial values
       $scope.loginError = false;
       $scope.disabled = true;
-      greetings = document.getElementById('loginName').value;
 
       // call login from service
       AuthService.login($scope.loginForm.username, $scope.loginForm.password)
@@ -22,6 +21,9 @@ angular.module('myApp').controller('loginController',
         // handle error
         .catch(function () {
           $scope.loginError = true;
+          setTimeout(function() {
+            $scope.disabled = false;
+          }, 5000);
           $scope.errorMessage = "Invalid username and/or password";
           $scope.disabled = false;
           $scope.loginForm = {};
@@ -119,7 +121,7 @@ angular.module('myApp').controller('githubController',
         $scope.numberStarredRepos = 0;
 
 
-      for (var x = 1; x < 100 ; x++) {
+      for (var x = 1; x < 100; x++) {
         $http({
           method: 'GET',
           url: 'https://api.github.com/users/' + $scope.githubName + '/repos?page=' + x
