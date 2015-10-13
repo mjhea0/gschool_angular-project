@@ -1,4 +1,4 @@
-angular.module('myApp').factory('AuthService',
+myApp.factory('AuthService',
   ['$q', '$timeout', '$http',
   function ($q, $timeout, $http) {
 
@@ -7,23 +7,19 @@ angular.module('myApp').factory('AuthService',
 
     // return available functions for use in controllers
     return ({
-      isLoggedIn: isLoggedIn,
       getUserStatus: getUserStatus,
       login: login,
       logout: logout,
-      register: register
+      register: register,
+      githubLogin: githubLogin
     });
 
-    function isLoggedIn() {
+    function getUserStatus() {
       if (user) {
         return true;
       } else {
         return false;
       }
-    }
-
-    function getUserStatus() {
-      return user;
     }
 
     function login(username, password) {
@@ -37,6 +33,7 @@ angular.module('myApp').factory('AuthService',
         .success(function (data, status) {
           if(status === 200 && data.status){
             user = true;
+            console.log(user);
             deferred.resolve();
           } else {
             user = false;
@@ -87,6 +84,7 @@ angular.module('myApp').factory('AuthService',
         // handle success
         .success(function (data, status) {
           if(status === 200 && data.status){
+            user = true;
             deferred.resolve();
           } else {
             deferred.reject();
@@ -94,6 +92,35 @@ angular.module('myApp').factory('AuthService',
         })
         // handle error
         .error(function (data) {
+          deferred.reject();
+        });
+
+      // return promise object
+      return deferred.promise;
+
+    }
+
+    function githubLogin() {
+
+      // create a new instance of deferred
+      var deferred = $q.defer();
+
+      // send a post request to the server
+      $http.post('/user/auth/github')
+        // handle success
+        .success(function (data, status) {
+          if(status === 200 && data.status){
+            user = true;
+            // console.log(user);
+            deferred.resolve();
+          } else {
+            user = false;
+            deferred.reject();
+          }
+        })
+        // handle error
+        .error(function (data) {
+          user = false;
           deferred.reject();
         });
 
