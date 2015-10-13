@@ -12,14 +12,15 @@ passport.use(new GitHubStrategy({
   callbackURL: config.github.callbackURL
   },
   function(accessToken, refreshToken, profile, done) {
-
     var searchQuery = {
-      name: profile.displayName
+      githubName: profile.displayName,
+      githubAccessToken: accessToken
     };
 
     var updates = {
-      name: profile.displayName,
-      someID: profile.id
+      githubName: profile.displayName,
+      githubID: profile.id,
+
     };
 
     var options = {
