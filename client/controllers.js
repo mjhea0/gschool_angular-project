@@ -1,6 +1,6 @@
 var greetings;
 
-angular.module('myApp').controller('loginController',
+myApp.controller('loginController',
   ['$scope', '$location', 'AuthService',
   function ($scope, $location, AuthService) {
 
@@ -22,8 +22,8 @@ angular.module('myApp').controller('loginController',
         .catch(function () {
           $scope.loginError = true;
           setTimeout(function() {
-            $scope.disabled = false;
-          }, 5000);
+            $scope.loginError = false;
+          }, 500);
           $scope.errorMessage = "Invalid username and/or password";
           $scope.disabled = false;
           $scope.loginForm = {};
@@ -42,7 +42,7 @@ angular.module('myApp').controller('loginController',
       AuthService.register($scope.registerForm.username, $scope.registerForm.password)
         // handle success
         .then(function () {
-          $location.path('/');
+          $location.path('/main');
           $scope.disabled = false;
           $scope.registerForm = {};
           $scope.success = true;
@@ -59,7 +59,7 @@ angular.module('myApp').controller('loginController',
 
 }]);
 
-angular.module('myApp').controller('logoutController',
+myApp.controller('logoutController',
   ['$scope', '$location', 'AuthService',
   function ($scope, $location, AuthService) {
 
@@ -70,25 +70,28 @@ angular.module('myApp').controller('logoutController',
       // call logout from service
       AuthService.logout()
         .then(function () {
-          $location.path('/');
+          $scope.hasAuthed = false;
+          $location.path('/#/login');
         });
 
     };
 
 }]);
 
-angular.module('myApp').controller('githubController',
-  ['$scope', '$location', '$http',
-  function ($scope, $location, $http) {
+myApp.controller('githubController',
+  ['$scope', '$location', '$http', 'githubFactory', 'githubAuthedFactory',
+  function ($scope, $location, $http, githubFactory, githubAuthedFactory) {
+    var pageNumber = 1;
+    $scope.allRepos = [];
 
-    $scope.user = greetings;
     $scope.getGithub = function () {
-
       // initial values
       $scope.error = false;
       $scope.disabled = true;
       $scope.image = false;
       $scope.searched = false;
+      $scope.hasBlog = false;
+      $scope.hasLocation = false;
 
       $http({
         method: 'GET',
@@ -101,9 +104,15 @@ angular.module('myApp').controller('githubController',
           $scope.githubAvatar = res.data.avatar_url;
           $scope.image = true;
           $scope.githubUsername = res.data.name;
-          $scope.blog = res.data.blog;
+          if (res.data.blog !== null) {
+            $scope.hasBlog = true;
+            $scope.blog = res.data.blog;
+          }
           $scope.email = res.data.email;
-          $scope.location = res.data.location;
+          if (res.data.location !== null) {
+            $scope.hasLocation = true;
+            $scope.location = res.data.location;
+          }
           $scope.totalRepos = res.data.public_repos;
           $scope.stalkers = res.data.followers;
           $scope.stalkees = res.data.following;
@@ -115,49 +124,122 @@ angular.module('myApp').controller('githubController',
           $scope.disabled = false;
           $scope.registerForm = {};
         });
-        var totalForks = 0;
-        var addedStars = 0;
-        var addedCommits = 0;
-        $scope.numberStarredRepos = 0;
+        $scope.getRepoPages();
+        console.log('blue button');
 
+    };
 
-      for (var x = 1; x < 100; x++) {
-        $http({
-          method: 'GET',
-          url: 'https://api.github.com/users/' + $scope.githubName + '/repos?page=' + x
-          // link: 'next'
-        })
-          .then(function (res) {
-            console.log(res.data);
+    $scope.getRepoPages = function() {
 
-            for (var i = 0; i < res.data.length; i++) {
-              totalForks += res.data[i].forks_count;
-              $scope.forks = totalForks;
+      githubFactory.getRepos($scope.githubName, pageNumber).success(function(res) {
+        $scope.allRepos.push(res);
+        if (res.length === 100) {
+          pageNumber++;
+          $scope.getRepoPages();
+        } else {
+          $scope.mergedArr = [].concat.apply([], $scope.allRepos);
+          $scope.getData($scope.mergedArr);
+        }
+      });
+    };
 
-              addedStars += res.data[i].stargazers_count;
-              $scope.totalStars = addedStars;
+    $scope.getData = function(array) {
+      var totalForks = 0;
+      var addedStars = 0;
+      var addedCommits = 0;
+      $scope.numberStarredRepos = 0;
 
-              if (res.data[i].stargazers_count !== 0) {
-                $scope.numberStarredRepos ++;
-              }
-            }
-          })
-          // handle error
-          .catch(function () {
-            $scope.error = true;
-            $scope.errorMessage = "Something went wrong!";
-            $scope.disabled = false;
-            $scope.registerForm = {};
-          });
-
-          // $http({
-          //   method: 'GET',
-          //   url: 'https://api.github.com/repos' + $scope.githubName + '/' + res.data.name + '/commits'
-          // })
-          //   .then(function (res) {
-          //     console.log(res.data.commit);
-          //   })
+      for (var i = 0; i < array.length; i++) {
+        totalForks += array[i].forks_count;
+        addedStars += array[i].stargazers_count;
+        if (array[i].stargazers_count !== 0) {
+          $scope.numberStarredRepos ++;
+        }
+        $scope.forks = totalForks;
+        $scope.totalStars = addedStars;
       }
     };
 
+    $scope.githubLogin = function() {
+      // call login from service
+      AuthService.gitHubLogin()
+        // handle success
+        .then(function () {
+          $location.path('/main');
+        })
+        // handle error
+        .catch(function () {
+          $scope.error = true;
+          $scope.errorMessage = "Invalid username and/or password";
+        });
+
+    };
+
+    $scope.getAuthedGithub = function() {
+      // initial values
+      $scope.error = false;
+      $scope.disabled = true;
+      $scope.image = false;
+      $scope.searched = false;
+      $scope.hasBlog = false;
+      $scope.hasLocation = false;
+
+      $http({
+        method: 'GET',
+        url: 'https://api.github.com/users/' + $scope.githubName
+      })
+        // handle success
+        .then(function (res) {
+          // console.log(res.data);
+          $scope.searched = true;
+          $scope.githubAvatar = res.data.avatar_url;
+          $scope.image = true;
+          $scope.githubUsername = res.data.name;
+          if (res.data.blog !== null) {
+            $scope.hasBlog = true;
+            $scope.blog = res.data.blog;
+          }
+          $scope.email = res.data.email;
+          if (res.data.location !== null) {
+            $scope.hasLocation = true;
+            $scope.location = res.data.location;
+          }
+          $scope.totalRepos = res.data.public_repos;
+          $scope.stalkers = res.data.followers;
+          $scope.stalkees = res.data.following;
+        })
+        // handle error
+        .catch(function () {
+          $scope.error = true;
+          $scope.errorMessage = "Something went wrong!";
+          $scope.disabled = false;
+          $scope.registerForm = {};
+        });
+        getAuthedRepoPages();
+        console.log('green button');
+    };
+
+    $scope.getAuthedRepoPages = function() {
+
+      githubAuthedFactory.getRepos($scope.githubName, pageNumber).success(function(res) {
+        $scope.allRepos.push(res);
+        if (res.length === 100) {
+          pageNumber++;
+          $scope.getRepoPages();
+        } else {
+          $scope.mergedArr = [].concat.apply([], $scope.allRepos);
+          $scope.getData($scope.mergedArr);
+        }
+      });
+    };
+
+    $scope.getAuthed = function() {
+      $scope.hasAuthed = true;
+    };
+
 }]);
+
+
+/*
+url: 'https://api.github.com/users/mjhea0/repos?per_page=100&page=1'
+ */
