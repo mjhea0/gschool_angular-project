@@ -7,8 +7,9 @@ var mongoose = require('mongoose'),
 var User = new Schema({
   username: String,
   password: String,
-  githubUsername: String,
-  githubPassword: String
+  githubName: String,
+  githubID: String,
+  githubAccessToken: String
 });
 
 User.plugin(passportLocalMongoose);
