@@ -3,7 +3,7 @@ var express = require('express'),
     logger = require('morgan'),
     cookieParser = require('cookie-parser'),
     bodyParser = require('body-parser'),
-    expressSession = require('express-session'),
+    session = require('express-session'),
     mongoose = require('mongoose'),
     hash = require('bcrypt-nodejs'),
     path = require('path'),
@@ -11,27 +11,28 @@ var express = require('express'),
     localStrategy = require('passport-local' ).Strategy;
 
 // mongoose
-mongoose.connect('mongodb://localhost/git-stats');
+mongoose.connect('mongodb://localhost/gitStats');
 
 // user schema/model
 var User = require('./models/user.js');
+// var social = require('./routes/socialAPI.js');
 
 // create instance of express
 var app = express();
 
 // require routes
 var routes = require('./routes/api.js');
+var mainRoutes = require('./routes/index.js');
 
 // define middleware
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
-app.use(require('express-session')({
-    cookie: { maxAge: 300000},
+app.use(session({
     secret: 'keyboard cat',
-    resave: true,
-    saveUninitialized: true
+    resave: false,
+    saveUninitialized: false
 }));
 app.use(passport.initialize());
 app.use(passport.session());
@@ -44,36 +45,24 @@ passport.deserializeUser(User.deserializeUser());
 
 // routes
 app.use('/user/', routes);
+app.use('/', mainRoutes);
 
-app.get('/', function(req, res, next) {
-  passport.authenticate('local', function(err, user, info) {
-    res.sendFile(path.join(__dirname, '../client', 'index.html'));
-    console.log(arguments);
-  })(req, res, next);
-  // console.log('HELLO');
-  // console.log(req.user);
-});
-
-// app.get('/', function(req, res) {
-//   res.sendFile(path.join(__dirname, '../client', 'index.html'));
-//   console.log(req.user);
-// });
 app.use(express.static(path.join(__dirname, '../client')));
 
 
 // error hndlers
-// app.use(function(req, res, next) {
-//     var err = new Error('Not Found');
-//     err.status = 404;
-//     next(err);
-// });
+app.use(function(req, res, next) {
+    var err = new Error('Not Found');
+    err.status = 404;
+    next(err);
+});
 
-// app.use(function(err, req, res) {
-//   res.status(err.status || 500);
-//   res.end(JSON.stringify({
-//     message: err.message,
-//     error: {}
-//   }));
-// });
+app.use(function(err, req, res) {
+  res.status(err.status || 500);
+  res.end(JSON.stringify({
+    message: err.message,
+    error: {}
+  }));
+});
 
 module.exports = app;
